@@ -1,0 +1,12 @@
+[webservers]
+172.31.27.33 
+[databaseservers]
+172.31.23.254
+
+[webservers:vars]
+ansible_ssh_private_key_file=~/ansible-key.pem
+ansible_user= admin
+
+[databaseservers:vars]
+ansible_ssh_private_key_file=~/ansible-key.pem
+ansible_user= ubuntu

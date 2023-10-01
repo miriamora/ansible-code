@@ -1,0 +1,58 @@
+---
+- hosts: all
+  become: yes
+  gather_facts: yes
+  vars:
+    user_name: ginger
+    color: red
+  tasks:
+    - name: Install passwd package
+      apt:
+        name: passwd
+        state: present
+      when: ansible_distribution not in "Debian, Ubuntu"
+      tags: 
+        - app1
+    - name: Ensure group "cloudteam" exists
+      group:
+        name: cloudteam
+        state: present
+#      when: ansible_distribution_major_version < 9
+    - name: Ensure user "admin" exists
+      user:
+        name: "{{user_name}}"
+        comment: Mir Ora
+        group: cloudteam
+    - name: Ensure user "ginger" exists
+      user:
+        name: "{{user_name}}"
+        comment: Ginger Bae
+        group: cloudteam
+      tags:
+        - ginger
+
+- hosts: databaseservers
+  become: yes
+  tasks:
+    - name : instal apache
+      apt:
+        name: apache2
+        state: present
+    - name: Start service apache, if not started
+      service:
+        name: apache2
+        state: started
+        enabled: yes
+        tags: 
+            - service
+    - name: Copy index file to webserver group
+      copy:
+        src: /home/ec2-user/ansible-dev/index.html
+        dest: /var/www/html/
+        owner: MirOra
+        group: cloudteam
+        mode: '0644'
+      tags:
+        - index  
+
+    
