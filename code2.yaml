@@ -1,11 +1,29 @@
 ---
 - hosts: all
   become: yes
-  gather_facts: yes
+  gather_facts: false
+  ignore_errors: true
   vars:
     user_name: ginger
     color: red
+
   tasks:
+    - name: check uptime
+      command: uptime
+      tags:
+        - uptime
+
+    - name: Install softwares
+      ansible.builtin.package:
+        name:
+          - wget
+          - ntp
+          - finger
+          - curl
+        state: latest
+      tags:
+        - package
+
     - name: Install passwd package
       apt:
         name: passwd
@@ -32,9 +50,10 @@
         - ginger
 
 - hosts: databaseservers
+  gather_facts: false
   become: yes
   tasks:
-    - name : instal apache
+    - name : install apache
       apt:
         name: apache2
         state: present
@@ -43,8 +62,7 @@
         name: apache2
         state: started
         enabled: yes
-        tags: 
-            - service
+        
     - name: Copy index file to webserver group
       copy:
         src: /home/ec2-user/ansible-dev/index.html

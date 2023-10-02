@@ -1,0 +1,21 @@
+---
+- hosts: webservers
+  become: yes
+  gather_facts: false
+  ignore_errors: true
+  tasks:
+    - name: Modify line in file
+      ansible.builtin.lineinfile:
+        path: /etc/selinux/semanage.conf
+       # regexp: '^module-store = direct'
+        insertafter: '^module-store = direct'
+        line: '#Listen 8080'
+      tags:
+        - Listen  
+    - name: Modify line in file
+      ansible.builtin.lineinfile:
+        path: /etc/selinux/semanage.conf
+        regexp: '#Listen 8080'
+        state: absent
+      tags:
+        - delete 

@@ -1,0 +1,15 @@
+---
+- hosts: all
+  become: yes
+  gather_facts: false
+  ignore_errors: true
+  tasks:
+    - name: Download Nexus file
+      ansible.builtin.get_url:
+        url: http://198.58.119.40:8081/repository/MirOra/bioMedical-0.0.2-SNAPSHOT.jar
+        dest: /tmp
+        mode: '0440'
+        username: admin
+        password: devops
+
+ #       password: '{{ mysecret }}'
